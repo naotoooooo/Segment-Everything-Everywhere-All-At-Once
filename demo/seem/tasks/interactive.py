@@ -85,6 +85,7 @@ def interactive_infer_image(model, audio_model, image, tasks, refimg=None, reftx
         model.model.task_switch['spatial'] = True
         mask_ori = np.asarray(mask_ori)[:,:,0:1].copy()
         mask_ori = torch.from_numpy(mask_ori).permute(2,0,1)[None,]
+        mask_ori = mask_ori.float()
         mask_ori = (F.interpolate(mask_ori, (height, width), mode='bilinear') > 0)
         data['stroke'] = mask_ori
 
