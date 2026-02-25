@@ -26,6 +26,8 @@ from utils.constants import COCO_PANOPTIC_CLASSES
 
 from demo.seem.tasks import *
 
+import time
+
 def parse_option():
     parser = argparse.ArgumentParser('SEEM Demo', add_help=False)
     parser.add_argument('--conf_files', default="configs/seem/focall_unicl_lang_demo.yaml", metavar="FILE", help='path to config file', )
@@ -66,11 +68,16 @@ audio = whisper.load_model("base")
 
 @torch.no_grad()
 def inference(image, task, *args, **kwargs):
+    start_time = time.time()
     with torch.autocast(device_type='cuda', dtype=torch.float16):
         if 'Video' in task:
-            return interactive_infer_video(model, audio, image, task, *args, **kwargs)
+            result = interactive_infer_video(model, audio, image, task, *args, **kwargs)
         else:
-            return interactive_infer_image(model, audio, image, task, *args, **kwargs)
+            result = interactive_infer_image(model, audio, image, task, *args, **kwargs)
+    
+    elapsed_time = time.time() - start_time
+    print(f"Inference time: {elapsed_time:.6f} seconds")
+    return result
 
 class ImageMask(gr.components.Image):
     """
