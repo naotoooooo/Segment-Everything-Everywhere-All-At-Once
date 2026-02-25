@@ -289,9 +289,10 @@ def main():
         result_pil.save(output_path)
 
         print(f"Saved to {output_path}")
-    if times:
+    if len(times) > 5:
+        print(f"平均処理時間: {np.mean(times[5:]):.6f} sec.")
+    else:
         print(f"平均処理時間: {np.mean(times):.6f} sec.")
-
 
 if __name__ == "__main__":
     main()
