@@ -111,3 +111,10 @@ Config/*
 ./demo_code/*.pth
 *.pt
 *.pth
+
+# add
+*.zip
+*.zip.1
+*.zip.2
+*.pt.1
+*.png
