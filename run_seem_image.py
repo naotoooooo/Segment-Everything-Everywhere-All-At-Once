@@ -278,7 +278,7 @@ def main():
         # 赤色マスク
         overlay[mask == 1] = [128, 64, 128]
 
-        alpha = 0.5  # 透明度（0〜1）
+        alpha = 0.8  # 透明度（0〜1）
         blended = (image_np * (1 - alpha) + overlay * alpha).astype(np.uint8)
 
         result_pil = Image.fromarray(blended)
