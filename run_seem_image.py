@@ -148,7 +148,7 @@ from modeling import build_model
 from utils.distributed import init_distributed
 from utils.arguments import load_opt_from_config_files
 from utils.constants import COCO_PANOPTIC_CLASSES
-
+import time
 
 # ----------------------------
 # Argument
@@ -235,22 +235,27 @@ def main():
             "width": image_tensor.shape[2]
         }]
 
-        # inference
-        start = torch.cuda.Event(enable_timing=True)
-        end = torch.cuda.Event(enable_timing=True)
+        # # inference
+        # start = torch.cuda.Event(enable_timing=True)
+        # end = torch.cuda.Event(enable_timing=True)
         
-        start.record()
+        # start.record()
+        start_time = time.time()
 
         with torch.no_grad():
             with torch.autocast(device_type="cuda", dtype=torch.float16):
                 results = model.model.evaluate_grounding(batch_inputs, mode=None)
+        
+        end_time = time.time() - start_time
+        print(f"end_time: {end_time:.6f} sec")
+        times.append(end_time)
 
-        end.record()
-        torch.cuda.synchronize()
-        elapsed_time = start.elapsed_time(end)
+        # end.record()
+        # torch.cuda.synchronize()
+        # elapsed_time = start.elapsed_time(end)
 
-        times.append(elapsed_time / 1000)
-        print(elapsed_time / 1000, 'sec.')
+        # times.append(elapsed_time / 1000)
+        # print(elapsed_time / 1000, 'sec.')
 
         mask = results[0]["grounding_mask"].cpu().numpy()
         
@@ -289,7 +294,7 @@ def main():
         result_pil.save(output_path)
 
         print(f"Saved to {output_path}")
-    if len(times) > 5:
+    if len(times) > 3:
         print(f"平均処理時間: {np.mean(times[5:]):.6f} sec.")
     else:
         print(f"平均処理時間: {np.mean(times):.6f} sec.")
