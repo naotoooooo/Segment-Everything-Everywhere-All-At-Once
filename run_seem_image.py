@@ -149,6 +149,7 @@ from utils.distributed import init_distributed
 from utils.arguments import load_opt_from_config_files
 from utils.constants import COCO_PANOPTIC_CLASSES
 import time
+import shutil
 
 # ----------------------------
 # Argument
@@ -160,9 +161,9 @@ def parse_option():
         default="configs/seem/focall_unicl_lang_v1.yaml",
         help="path to config file",
     )
-    parser.add_argument("--input", required=True, help="input image path or folder")
+    parser.add_argument("--input", default="input_robomech", help="input image path or folder")
     parser.add_argument("--text", required=True, help="text prompt (e.g. road)")
-    parser.add_argument("--output", default="output", help="output folder")
+    parser.add_argument("--output", default="robomech_seem", help="output folder")
     return parser.parse_args()
 
 
@@ -175,6 +176,13 @@ def main():
     os.makedirs(args.output, exist_ok=True)
     
     times = []
+    
+    # Directory to save results    
+    output_dir = f'robomech_seem/{args.text}'
+    # Clear output_dir if it exists, then recreate it
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)  # Remove all contents of the directory
+    os.makedirs(output_dir, exist_ok=True)
 
     # load config
     opt = load_opt_from_config_files([args.conf_files])
@@ -290,7 +298,7 @@ def main():
 
         # 保存
         base_name = os.path.splitext(os.path.basename(img_path))[0]
-        output_path = os.path.join(args.output, f"{base_name}_overlay.png")
+        output_path = os.path.join(output_dir, f"{base_name}_overlay.png")
         result_pil.save(output_path)
 
         print(f"Saved to {output_path}")
