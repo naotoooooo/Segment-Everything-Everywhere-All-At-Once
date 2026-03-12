@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEXTS=("road" "way" "walkway")
+TEXTS=("traversable area" "walkable area" "runnable area" "road" "way" "walkway" "sidewalk" "street" "pavement")
 
 for TEXT in "${TEXTS[@]}"
 do
